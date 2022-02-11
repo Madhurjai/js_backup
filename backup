@@ -1,0 +1,138 @@
+var products = [
+  { id: 101, name: 'Basket Ball', image: 'basketball.png', price: 150 },
+  { id: 102, name: 'Football', image: 'football.png', price: 120 },
+  { id: 103, name: 'Soccer', image: 'soccer.png', price: 110 },
+  { id: 104, name: 'Table Tennis', image: 'table-tennis.png', price: 130 },
+  { id: 105, name: 'Tennis', image: 'tennis.png', price: 100 },
+]
+var arrays = []
+$(document).ready(function () {
+  product()
+  $('#products').on('click', '#add', function(e) {
+    e.preventDefault();
+    pid = $(this).data('id');
+    var obj = get_pro(pid);
+    var quantity = 0
+    if (arrays.length == 0) {
+      obj.quantity = 1
+      arrays.push(obj)
+    } else {
+      if (arrays.includes(obj)) {
+        obj.quantity += 1
+      } else {
+        quantity += 1
+        obj.quantity = quantity
+        arrays.push(obj)
+      }
+    }
+    // console.log(arrays)
+    display()
+  })
+})
+function product() {
+  var pro = ''
+  for (i of products) {
+    pro =
+      '<div id="product-' +
+      i.id +
+      '" class="product">' +
+      '<img src="images/' +
+      i.image +
+      '">' +
+      '<h3 class="title"><a href="#">Product ' +
+      i.id +
+      '</a></h3>' +
+      '<span>Price: ' +
+      i.price +
+      '</span>' +
+      '<a class="add-to-cart" href="#" data-id = ' +
+      i.id +
+      ' id = "add">Add To Cart</a>'
+    ;('</div>')
+    $('#products').append(pro)
+  }
+
+}
+
+function get_pro(pid) {
+  for (i of products) {
+    if (i.id == pid) {
+      return i
+    }
+  }
+}
+
+
+function display() {
+  var total_amount = 0
+  var table =
+    '<table id = "tab"><tr><th>ID</th><th>name</th><th>price</th><th>quantity</th><th></th><th>total amount</th><button id = "btn">X</button></tr>'
+  for (i of arrays) {
+    table +=
+      '<tr><td>' +
+      i.id +
+      '</td><td>' +
+      i.name +
+      '</td><td>' +
+      i.price +
+      '</td><td>' +
+      i.quantity +
+      ' <input type = "number" id = "quantity" data-id = ' +
+      i.id +
+      ' ></td><td><a href = "#" id = "remove" data-rem = ' +
+      i.id +
+      '>remove</a></td><td>' +
+      i.price * i.quantity +
+      '</td></tr>'
+    total_amount += i.price * i.quantity
+  }
+  table +=
+    '<tr><th colspan = "5">total amount = ' +
+    total_amount +
+    '</th></tr></table>'
+  $('#table1').html(table)
+  $('table , th , tr , td').css({
+    border: '2px solid violet',
+    'background-image': 'linear-gradient(160deg, #0093E9 0%, #80D0C7 100%)',
+  })
+  $("#btn").css('background-color','red');
+  $('table').css({ width: '700px', margin: 'auto' })
+  $('input').css({ margin: '10px 40px' })
+}
+
+
+
+$('#table1').on('keyup', '#quantity', function (e) {
+  e.preventDefault();
+  var pid = $(this).data('id')
+  var qua = get_pro(pid)
+  var value = $(this).val()
+  q = 0
+  for (i of arrays) {
+    if (i.id == pid) {
+      // q += value ;
+      i.quantity += parseInt(value)
+    }
+  }
+  console.log(arrays)
+  display()
+});
+
+
+$('#table1').on('click', '#remove', function (e) {
+  e.preventDefault();
+  var pid = $(this).data('rem')
+  var obj = get_pro(pid)
+  for (i of arrays) {
+    if (i.id == pid) {
+      var ind = arrays.indexOf(i)
+      arrays.splice(ind, 1)
+    }
+  }
+  display();
+});
+
+$("#table1").on('click',"#btn",function(){
+  $("#tab").hide();
+  $("#btn").css({'display':'none',});
+});
